@@ -1,0 +1,45 @@
+{
+  "name": "Keep Ovarian Cancer",
+  "remarks": [
+    "Keeps only patients who received an ovarian cancer diagnosis, so a run",
+    "produces a pure ovarian cohort while every other module still runs and",
+    "gives each kept patient a full comorbidity history.",
+    "",
+    "Tests the attribute rather than the SNOMED condition. ovarian_cancer.json",
+    "sets 'Ovarian Cancer' via assign_to_attribute on Diagnose_Ovarian_Cancer and",
+    "never ends the condition, so the attribute and an Active Condition check",
+    "agree today -- but the attribute keeps agreeing if the module later gains a",
+    "ConditionEnd for remission, where an Active Condition check would start",
+    "silently dropping cured patients.",
+    "",
+    "Yield: roughly 1 in 74 female lifetimes reach a diagnosis (0.3% BRCA",
+    "carriers at ~42% lifetime risk, 1.2% family history at ~3.4%, 98.5% average",
+    "risk at ~1.2%), so pair this with -g F. Every rejected patient is a full",
+    "lifetime simulation, so budget ~74 simulated lives per patient exported."
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "conditional_transition": [
+        {
+          "transition": "Keep",
+          "condition": {
+            "condition_type": "Attribute",
+            "attribute": "Ovarian Cancer",
+            "operator": "is not nil"
+          }
+        },
+        {
+          "transition": "Terminal"
+        }
+      ]
+    },
+    "Keep": {
+      "type": "Terminal"
+    },
+    "Terminal": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2
+}
